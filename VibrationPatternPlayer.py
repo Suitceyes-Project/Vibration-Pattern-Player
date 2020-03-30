@@ -1,9 +1,17 @@
 import Interpolation
 
+"""
+Used to play vibration patterns from a json file.
+"""
 class VibrationPatternPlayer:    
 
-    def __init__(self, vest_controller):
-        self._vest_controller = vest_controller
+    def __init__(self, vest_device, motor_count):
+        """Initializes the Vibration Pattern Player.
+        Args:
+            vest_device: An implementation of the VestDeviceBase
+            motor_count: The total number of vibration motors. Vibration motors will be addressed via an index 0 - (motor_count -1).
+        """
+        self._vest_controller = vest_device
         self._get_frames_list = []
         self.speed = 1
         self._current_time = 0
@@ -11,21 +19,8 @@ class VibrationPatternPlayer:
         self._is_playing = False
         self._clip = None
         
-        actuators = vest_controller.get_actuator_indices()
-        for i in range(0, len(actuators)):
-            self._actuators[actuators[i]] = 0
-        
-
-    def _get_frames_until(self, time):
-        self._get_frames_list.clear()
-        frames = self._clip["frames"]
-        for frame in frames:
-            if frame["time"] <= time:
-                self._get_frames_list.append(frame)
-            else:
-                break
-
-        return self._get_frames_list
+        for i in range(motor_count):
+            self._actuators[i] = 0
 
     def _get_previous_frame(self, time, pin):
         frames = self._clip["frames"]
@@ -70,6 +65,11 @@ class VibrationPatternPlayer:
             self._actuators[key] = 0
 
     def sample(self, time):
+        """
+        Samples the current clip at the given time.
+        Args:
+            time: a float value between 0 - clip duration.
+        """
         self._reset_actuator_values()
 
         for key in self._actuators:
@@ -80,7 +80,7 @@ class VibrationPatternPlayer:
             self._actuators[key] = int(round(self._interpolate(prev["value"], next["value"], prev["time"], next["time"], time)))
             #print(str(time) + ": [" + str(key) +"] : [" + str(self._actuators[key]) + "]")
         
-        self._vest_controller.vibrate_batched(self._actuators)
+        self._vest_controller.set_pins_batched(self._actuators)
             
 
     def _interpolate(self, start_value, end_value, start_time, end_time, current_time):
@@ -98,6 +98,11 @@ class VibrationPatternPlayer:
         return (1-t) * start_value + t * end_value
 
     def play_clip(self, clip):
+        """
+        Plays a given json clip.
+        Args:
+            clip: the json loaded clip.
+        """
         self._current_time = 0
         self._vest_controller.set_frequency(0)
         self.speed = 1
@@ -105,7 +110,11 @@ class VibrationPatternPlayer:
         self._clip = clip
 
     def update(self, deltaTime):
-
+        """
+        Updates the vibration pattern player.
+        Args:
+            deltaTime: A float that represents the time that has elapsed since the last frame in seconds.
+        """
         if self.is_playing == False:
             return
 
@@ -123,25 +132,4 @@ class VibrationPatternPlayer:
                 self.is_playing = False
                 return            
         
-        self.sample(self._current_time)
-
-
-if __name__ == "__main__":
-    from VibrationController import VestController
-    from VestDeviceBase import DummyVestDevice
-    import json
-    import time
-    vest_controller = VestController(DummyVestDevice(), range(0,32))
-    vbp = VibrationPatternPlayer(vest_controller)
-    with open("vibration_patterns/25_percent.json") as file:
-        clip = json.load(file)
-        vbp.play_clip(clip)
-        delta_time = 0.0
-        time.sleep(2)
-        prev_frame = time.time()
-        while vbp.is_playing:
-            current_time = time.time()
-            delta_time = (current_time - prev_frame)
-            vbp.update(delta_time)
-            prev_frame = current_time
-            time.sleep(0.01)            
+        self.sample(self._current_time)           
