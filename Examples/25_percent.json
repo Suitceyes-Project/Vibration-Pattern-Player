@@ -1,0 +1,51 @@
+{
+  "isLooped": false,
+  "duration": 1.6,
+  "interpolation" : 0,
+  "frames": [
+    {
+      "time": 0,
+      "actuators": [
+        {
+          "pin": 2,
+          "value": 255
+        }
+      ]
+    },
+    {
+      "time": 1.0,
+      "actuators": [
+        {
+          "pin": 2,
+          "value": 0
+        },
+	{	
+          "pin": 3,
+          "value": 255
+        }
+      ]
+    },
+    {
+      "time": 1.3,
+      "actuators": [
+	{
+          "pin": 3,
+          "value": 0
+        },
+	{	
+          "pin": 7,
+          "value": 255
+        }
+      ]
+    },
+    {
+      "time": 1.6,
+      "actuators": [
+        {
+          "pin": 7,
+          "value": 0
+        }
+      ]
+    }    
+  ]
+}
