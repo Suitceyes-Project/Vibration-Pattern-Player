@@ -60,3 +60,6 @@ with open("Examples/25_percent.json") as file:
         time.sleep(0.01)
 ```
 Updates of the vibration pattern player require a call to `update(delta_time)` every frame. `delta_time` is the time in seconds that have elapsed since the last call. 
+
+## Authors
+- James Gay (james.gay@hs-offenburg.de)
