@@ -1,5 +1,5 @@
 import PyCmdMessenger
-import VestDeviceBase
+from VestDeviceBase import VestDevice
 
 class UsbVestDevice(VestDevice):
     """

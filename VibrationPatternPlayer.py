@@ -5,7 +5,7 @@ Used to play vibration patterns from a json file.
 """
 class VibrationPatternPlayer:    
 
-    def __init__(self, vest_device, motor_count):
+    def __init__(self, vest_device):
         """Initializes the Vibration Pattern Player.
         Args:
             vest_device: An implementation of the VestDeviceBase
@@ -18,9 +18,6 @@ class VibrationPatternPlayer:
         self._actuators = {} # dictionary mapping index to vibration intensity
         self._is_playing = False
         self._clip = None
-        
-        for i in range(motor_count):
-            self._actuators[i] = 0
 
     def _get_previous_frame(self, time, pin):
         frames = self._clip["frames"]
@@ -76,7 +73,7 @@ class VibrationPatternPlayer:
             prev = self._get_previous_frame(time, key)
             next = self._get_next_frame(time, key)
             if prev["value"] == 0 and next["value"] == 0:
-                continue         
+                continue            
             self._actuators[key] = int(round(self._interpolate(prev["value"], next["value"], prev["time"], next["time"], time)))
             #print(str(time) + ": [" + str(key) +"] : [" + str(self._actuators[key]) + "]")
         
@@ -108,6 +105,10 @@ class VibrationPatternPlayer:
         self.speed = 1
         self.is_playing = True
         self._clip = clip
+        self._actuators.clear()
+        for frame in clip["frames"]:
+            for actuator in frame["actuators"]:
+                self._actuators.setdefault(actuator["pin"], 0)
 
     def update(self, deltaTime):
         """

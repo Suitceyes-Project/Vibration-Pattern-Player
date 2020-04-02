@@ -1,5 +1,5 @@
 from suitceyes import VibrationMotorDriver
-import VestDeviceBase
+from VestDeviceBase import VestDevice
 
 class I2CVestDevice(VestDevice):
     def __init__(self, *addresses):
@@ -27,6 +27,6 @@ class I2CVestDevice(VestDevice):
         self._driver.mute_all()
 
     def set_pins_batched(self, values = dict):
-        for key in values:
-            values[key] = values[key]/255     
+        for key in values:            
+            values[key] = values[key]/255
         self._driver.set_vibration_batched(values)

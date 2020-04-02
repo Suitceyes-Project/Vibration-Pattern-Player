@@ -1,5 +1,5 @@
 from bluepy.btle import UUID, Peripheral
-import VestDeviceBase
+from VestDeviceBase import VestDevice
 
 class BleVestDevice(VestDevice):
     def __init__(self, deviceAddr):
