@@ -45,7 +45,7 @@ import json
 import time
 from VibrationPatternPlayer import VibrationPatternPlayer
     
-with I2CVestDevice(0x40) as vest_controller: #replace with real implementation
+with I2CVestDevice(0x40) as vest_controller:
     vbp = VibrationPatternPlayer(vest_controller)
     with open("Examples/heartbeat.json") as file:
         clip = json.load(file)
