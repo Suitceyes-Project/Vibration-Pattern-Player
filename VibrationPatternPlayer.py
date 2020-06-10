@@ -16,7 +16,7 @@ class VibrationPatternPlayer:
         self.speed = 1
         self._current_time = 0
         self._actuators = {} # dictionary mapping index to vibration intensity
-        self._is_playing = False
+        self.is_playing = False
         self._clip = None
 
     def _get_previous_frame(self, time, pin):
@@ -82,7 +82,7 @@ class VibrationPatternPlayer:
 
     def _interpolate(self, start_value, end_value, start_time, end_time, current_time):
         if ("interpolation" in self._clip.keys()) == False:
-            return start_time
+            return start_value
 
         method = self._clip["interpolation"]
         t = (current_time - start_time) / (end_time - start_time)
@@ -122,7 +122,8 @@ class VibrationPatternPlayer:
         if self._clip == None:
             return
 
-        self._current_time += deltaTime * self.speed        
+        self._current_time += deltaTime * self.speed
+        #print(str(self._current_time))        
         duration = self._clip["duration"]
         
         if self._current_time > duration:
